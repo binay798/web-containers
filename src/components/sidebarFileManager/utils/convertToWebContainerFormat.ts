@@ -1,4 +1,4 @@
-import type { FileSystemTree } from "@webcontainer/api";
+import type { FileSystemTree } from "../../webcontainer/webcontainer.types";
 import type { Directory } from "./fileManager";
 
 /**

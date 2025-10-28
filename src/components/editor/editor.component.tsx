@@ -17,6 +17,12 @@ import {
 } from "../../store/redux/editor/editor.slice";
 import { getLanguageFromFileName } from "./utils/getLanguageFromFileName";
 import { OpenedFilesTab } from "./components/openedFilesTab/openedFilesTab.component";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import {
+  setMonacoEditorCodeData,
+  setWebContainerCodeData,
+} from "../../store/redux/codeData/codeData.slice";
+import { convertRootToWebContainerFormat } from "../sidebarFileManager/utils/convertToWebContainerFormat";
 
 const CURRENT_SANDBOX_ID = "ww9kis";
 
@@ -38,9 +44,15 @@ export function MEditor() {
     if (!editor.activeFile) {
       const file = findFileByName(root, "index.tsx");
       if (file) {
-        dispatch(setActiveFileReducer(file));
+        // dispatch(setActiveFileReducer(file));
       }
     }
+
+    dispatch(setMonacoEditorCodeData(JSON.parse(JSON.stringify(root))));
+    const convertedWebContainerCodeData = convertRootToWebContainerFormat(
+      JSON.parse(JSON.stringify(root))
+    );
+    dispatch(setWebContainerCodeData(convertedWebContainerCodeData));
     setRootDir(root);
   });
 
@@ -53,29 +65,37 @@ export function MEditor() {
   );
 
   return (
-    <div className="h-[90vh]">
-      <div className="flex gap-0">
-        <div>
-          <FileEditTab />
-          <Sidebar>
-            <FileTree
-              rootDir={rootDir}
-              // selectedFile={selectedFile as File}
-              selectedFile={editor.activeFile as File}
-              onSelect={onSelect}
-            />
-          </Sidebar>
-        </div>
-        <div className="flex flex-col w-full">
-          <OpenedFilesTab />
-          <Editor
-            theme="vs-dark"
-            height={"90vh"}
-            width={"100%"}
-            value={editor.activeFile?.content ?? ""}
-            language={language}
-          />
-        </div>
+    <div className="h-full">
+      <div className="flex gap-0 h-full">
+        <PanelGroup direction="horizontal">
+          <Panel defaultSize={20}>
+            <div>
+              <FileEditTab />
+              <Sidebar>
+                <FileTree
+                  rootDir={rootDir}
+                  // selectedFile={selectedFile as File}
+                  selectedFile={editor.activeFile as File}
+                  onSelect={onSelect}
+                />
+              </Sidebar>
+            </div>
+          </Panel>
+          <PanelResizeHandle className="w-2 bg-blue-300" />
+          <Panel>
+            <div className="flex flex-col w-full h-full">
+              <OpenedFilesTab />
+              <Editor
+                theme="vs-dark"
+                height={"100%"}
+                width={"100%"}
+                value={editor.activeFile?.content ?? ""}
+                language={language}
+                options={{ minimap: { enabled: false } }}
+              />
+            </div>
+          </Panel>
+        </PanelGroup>
       </div>
     </div>
   );

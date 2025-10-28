@@ -4,6 +4,7 @@
   /* max-width: 1280px; */
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 .logo {
@@ -47,4 +48,8 @@ body {
 
 .file-tab-item:not(:last-child) {
   border-right: 1px solid rgba(128, 128, 128, 0.4);
+}
+
+.terminal {
+  @apply h-full;
 }
