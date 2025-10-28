@@ -12,8 +12,6 @@ interface FileTreeProps {
 }
 
 export const FileTree = (props: FileTreeProps) => {
-  console.log(props.rootDir);
-
   return <SubTree directory={props.rootDir} {...props} />;
 };
 

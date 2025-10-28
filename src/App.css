@@ -1,13 +1,9 @@
 @import "tailwindcss";
 
-*,
-*::after,
-*::before {
+#root {
+  /* max-width: 1280px; */
   margin: 0;
   padding: 0;
-}
-#root {
-  max-width: 1280px;
 }
 
 .logo {
@@ -47,4 +43,8 @@
 }
 body {
   background-color: #151515;
+}
+
+.file-tab-item:not(:last-child) {
+  border-right: 1px solid rgba(128, 128, 128, 0.4);
 }

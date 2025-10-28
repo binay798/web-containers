@@ -6,8 +6,17 @@ import {
   findFileByName,
   Type,
   type Directory,
+  type File,
 } from "../sidebarFileManager/utils/fileManager";
 import { useFilesFromSandbox } from "../sidebarFileManager/utils/useFileFromSandbox";
+import { FileEditTab } from "../sidebarFileManager/components/fileEditTab/fileEditTab.component";
+import { useDispatch, useSelector } from "../../store/hooks.store";
+import {
+  addTabFile,
+  setActiveFileReducer,
+} from "../../store/redux/editor/editor.slice";
+import { getLanguageFromFileName } from "./utils/getLanguageFromFileName";
+import { OpenedFilesTab } from "./components/openedFilesTab/openedFilesTab.component";
 
 const CURRENT_SANDBOX_ID = "ww9kis";
 
@@ -23,33 +32,50 @@ const dummyDir: Directory = {
 
 export function MEditor() {
   const [rootDir, setRootDir] = useState(dummyDir);
-  const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
+  const editor = useSelector((store) => store.editor);
+  const dispatch = useDispatch();
   useFilesFromSandbox(CURRENT_SANDBOX_ID, (root) => {
-    if (!selectedFile) {
+    if (!editor.activeFile) {
       const file = findFileByName(root, "index.tsx");
       if (file) {
-        // @ts-ignore
-        setSelectedFile(file);
+        dispatch(setActiveFileReducer(file));
       }
     }
     setRootDir(root);
   });
 
-  const onSelect = (file: File) => setSelectedFile(file);
+  const onSelect = (file: File) => {
+    dispatch(addTabFile(file));
+    dispatch(setActiveFileReducer(file));
+  };
+  const language = getLanguageFromFileName(
+    editor.activeFile?.name ?? "index.html"
+  );
 
   return (
     <div className="h-[90vh]">
       <div className="flex gap-0">
         <div>
+          <FileEditTab />
           <Sidebar>
             <FileTree
               rootDir={rootDir}
-              selectedFile={selectedFile as File}
+              // selectedFile={selectedFile as File}
+              selectedFile={editor.activeFile as File}
               onSelect={onSelect}
             />
           </Sidebar>
         </div>
-        <Editor theme="vs-dark" height={200} />
+        <div className="flex flex-col w-full">
+          <OpenedFilesTab />
+          <Editor
+            theme="vs-dark"
+            height={"90vh"}
+            width={"100%"}
+            value={editor.activeFile?.content ?? ""}
+            language={language}
+          />
+        </div>
       </div>
     </div>
   );
