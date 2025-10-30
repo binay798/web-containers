@@ -11,6 +11,7 @@ interface CommonProps {
   name: string;
   parentId: string | undefined;
   depth: number;
+  absolutePath: string | null;
 }
 
 export interface File extends CommonProps {
@@ -34,12 +35,13 @@ export function buildFileTree(data: any): Directory {
 
   const rootDir: Directory = {
     id: "0",
-    name: "root",
+    name: "",
     parentId: undefined,
     type: Type.DIRECTORY,
     depth: 0,
     dirs: [],
     files: [],
+    absolutePath: null,
   };
   // 将<id，目录对象>存入map
   dirs.forEach((item) => {
@@ -51,6 +53,7 @@ export function buildFileTree(data: any): Directory {
       depth: 0,
       dirs: [],
       files: [],
+      absolutePath: null,
     };
 
     cache.set(dir.id, dir);
@@ -64,6 +67,7 @@ export function buildFileTree(data: any): Directory {
       type: Type.FILE,
       depth: 0,
       content: item.code,
+      absolutePath: null,
     };
     cache.set(file.id, file);
   });

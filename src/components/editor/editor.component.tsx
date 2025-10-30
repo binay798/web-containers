@@ -23,6 +23,8 @@ import {
   setWebContainerCodeData,
 } from "../../store/redux/codeData/codeData.slice";
 import { convertRootToWebContainerFormat } from "../sidebarFileManager/utils/convertToWebContainerFormat";
+import { addAbsolutePaths } from "../sidebarFileManager/utils/convertToSidebarFormat";
+import type { WebContainer } from "@webcontainer/api";
 
 const CURRENT_SANDBOX_ID = "ww9kis";
 
@@ -34,11 +36,18 @@ const dummyDir: Directory = {
   depth: 0,
   dirs: [],
   files: [],
+  absolutePath: null,
 };
 
-export function MEditor() {
+interface Props {
+  webContainer: WebContainer;
+}
+export function MEditor({ webContainer }: Props) {
   const [rootDir, setRootDir] = useState(dummyDir);
   const editor = useSelector((store) => store.editor);
+  // const sidebarFormat = useSelector(
+  //   (store) => store.codeData.monacoEditorCodeData
+  // );
   const dispatch = useDispatch();
   useFilesFromSandbox(CURRENT_SANDBOX_ID, (root) => {
     if (!editor.activeFile) {
@@ -53,7 +62,8 @@ export function MEditor() {
       JSON.parse(JSON.stringify(root))
     );
     dispatch(setWebContainerCodeData(convertedWebContainerCodeData));
-    setRootDir(root);
+    const x = addAbsolutePaths(root);
+    setRootDir(x);
   });
 
   const onSelect = (file: File) => {
@@ -63,6 +73,17 @@ export function MEditor() {
   const language = getLanguageFromFileName(
     editor.activeFile?.name ?? "index.html"
   );
+
+  const handleCodeChange = async (content: string) => {
+    // if (!webContainer) return;
+    if (editor.activeFile?.absolutePath) {
+      await webContainer?.fs.writeFile(
+        editor.activeFile?.absolutePath,
+        content
+      );
+    }
+    console.log(editor.activeFile, content);
+  };
 
   return (
     <div className="h-full">
@@ -92,6 +113,7 @@ export function MEditor() {
                 value={editor.activeFile?.content ?? ""}
                 language={language}
                 options={{ minimap: { enabled: false } }}
+                onChange={(value) => handleCodeChange(value || "")}
               />
             </div>
           </Panel>

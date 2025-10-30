@@ -4,6 +4,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { CustomWebContainer } from "./components/webcontainer/webcontainer.component";
 import { WebContainer } from "@webcontainer/api";
 import { useEffect, useState } from "react";
+import { WebPreview } from "./components/webPreview/webPreview.component";
 
 function App() {
   const [webContainer, setWebContainer] = useState<WebContainer | null>(null);
@@ -26,13 +27,21 @@ function App() {
   }, []);
   return (
     <div className="text-white h-full">
-      <PanelGroup direction="vertical">
-        <Panel defaultSize={80}>
-          <MEditor />
+      <PanelGroup direction="horizontal">
+        <Panel>
+          <PanelGroup direction="vertical">
+            <Panel defaultSize={80}>
+              <MEditor webContainer={webContainer as WebContainer} />
+            </Panel>
+            <PanelResizeHandle className="h-2 bg-blue-300" />
+            <Panel defaultSize={20}>
+              <CustomWebContainer webContainer={webContainer as WebContainer} />
+            </Panel>
+          </PanelGroup>
         </Panel>
-        <PanelResizeHandle className="h-2 bg-blue-300" />
-        <Panel defaultSize={20}>
-          <CustomWebContainer webContainer={webContainer as WebContainer} />
+        <PanelResizeHandle className="w-2 bg-blue-300" />
+        <Panel defaultSize={30}>
+          <WebPreview webContainer={webContainer as WebContainer} />
         </Panel>
       </PanelGroup>
     </div>

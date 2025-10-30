@@ -22,8 +22,6 @@ interface SubTreeProps {
 }
 
 const SubTree = (props: SubTreeProps) => {
-  console.log(props.directory);
-
   return (
     <div>
       {props.directory.dirs.sort(sortDir).map((dir) => (

@@ -13,6 +13,7 @@ type DirectoryNode = {
     [name: string]: FileNode | DirectoryNode;
   };
 };
+
 /**
  * Generates a unique ID for files and directories
  */
@@ -33,15 +34,18 @@ function isFileNode(node: FileNode | DirectoryNode): node is FileNode {
  * @param name - The name of the directory (defaults to "root")
  * @param parentId - The parent directory ID (undefined for root)
  * @param depth - The depth level (defaults to 0)
+ * @param parentPath - The parent's absolute path (defaults to "")
  * @returns A Directory in sidebar format
  */
 export function convertToSidebarFormat(
   tree: FileSystemTree,
-  name: string = "root",
+  name: string = "",
   parentId: string | undefined = undefined,
-  depth: number = 0
+  depth: number = 0,
+  parentPath: string = ""
 ): Directory {
   const dirId = generateId();
+  const currentPath = parentPath ? `${parentPath}/${name}` : `/${name}`;
   const files: File[] = [];
   const dirs: Directory[] = [];
 
@@ -56,15 +60,16 @@ export function convertToSidebarFormat(
         parentId: dirId,
         depth: depth + 1,
         content: (node as FileNode).file.contents,
+        absolutePath: null,
       });
     } else {
       // It's a directory
       const subDir = convertToSidebarFormat(
-        // @ts-ignore
-        (node as DirectoryNode).directory, // CHANGED
+        (node as DirectoryNode).directory,
         entryName,
         dirId,
-        depth + 1
+        depth + 1,
+        currentPath
       );
       dirs.push(subDir);
     }
@@ -78,5 +83,30 @@ export function convertToSidebarFormat(
     depth,
     files,
     dirs,
+    absolutePath: null,
   };
+}
+
+export function addAbsolutePaths(node: Directory, parentPath = "") {
+  // Calculate the current absolute path
+  const currentPath = parentPath ? `${parentPath}/${node.name}` : node.name;
+
+  // Add absolutePath to the current node
+  node.absolutePath = currentPath;
+
+  // Recursively process all directories
+  if (node.dirs && node.dirs.length > 0) {
+    node.dirs.forEach((dir) => {
+      addAbsolutePaths(dir, currentPath);
+    });
+  }
+
+  // Add absolutePath to all files
+  if (node.files && node.files.length > 0) {
+    node.files.forEach((file) => {
+      file.absolutePath = `${currentPath}/${file.name}`;
+    });
+  }
+
+  return node;
 }
