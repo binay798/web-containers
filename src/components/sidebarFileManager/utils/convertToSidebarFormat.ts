@@ -65,6 +65,7 @@ export function convertToSidebarFormat(
     } else {
       // It's a directory
       const subDir = convertToSidebarFormat(
+        // @ts-ignore
         (node as DirectoryNode).directory,
         entryName,
         dirId,

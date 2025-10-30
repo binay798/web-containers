@@ -82,7 +82,7 @@ export function MEditor({ webContainer }: Props) {
         content
       );
     }
-    console.log(editor.activeFile, content);
+    // console.log(editor.activeFile, content);
   };
 
   return (
@@ -112,7 +112,10 @@ export function MEditor({ webContainer }: Props) {
                 width={"100%"}
                 value={editor.activeFile?.content ?? ""}
                 language={language}
-                options={{ minimap: { enabled: false } }}
+                options={{
+                  minimap: { enabled: false },
+                  renderValidationDecorations: "off",
+                }}
                 onChange={(value) => handleCodeChange(value || "")}
               />
             </div>
