@@ -3,7 +3,6 @@ import { useState } from "react";
 import Sidebar from "../sidebarFileManager/sidebar";
 import { FileTree } from "../sidebarFileManager/fileTree.component";
 import {
-  findFileByName,
   Type,
   type Directory,
   type File,
@@ -26,8 +25,6 @@ import { convertRootToWebContainerFormat } from "../sidebarFileManager/utils/con
 import { addAbsolutePaths } from "../sidebarFileManager/utils/convertToSidebarFormat";
 import type { WebContainer } from "@webcontainer/api";
 
-const CURRENT_SANDBOX_ID = "ww9kis";
-
 const dummyDir: Directory = {
   id: "1",
   name: "loading...",
@@ -49,13 +46,13 @@ export function MEditor({ webContainer }: Props) {
   //   (store) => store.codeData.monacoEditorCodeData
   // );
   const dispatch = useDispatch();
-  useFilesFromSandbox(CURRENT_SANDBOX_ID, (root) => {
-    if (!editor.activeFile) {
-      const file = findFileByName(root, "index.tsx");
-      if (file) {
-        // dispatch(setActiveFileReducer(file));
-      }
-    }
+  useFilesFromSandbox((root) => {
+    // if (!editor.activeFile) {
+    //   const file = findFileByName(root, "index.tsx");
+    //   if (file) {
+    //     // dispatch(setActiveFileReducer(file));
+    //   }
+    // }
 
     dispatch(setMonacoEditorCodeData(JSON.parse(JSON.stringify(root))));
     const convertedWebContainerCodeData = convertRootToWebContainerFormat(
