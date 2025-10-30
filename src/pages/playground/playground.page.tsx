@@ -32,13 +32,13 @@ function Playground() {
             <Panel defaultSize={80}>
               <MEditor webContainer={webContainer as WebContainer} />
             </Panel>
-            <PanelResizeHandle className="h-2 bg-blue-300" />
+            <PanelResizeHandle className="h-0.5 bg-stone-700" />
             <Panel defaultSize={20}>
               <CustomWebContainer webContainer={webContainer as WebContainer} />
             </Panel>
           </PanelGroup>
         </Panel>
-        <PanelResizeHandle className="w-2 bg-blue-300" />
+        <PanelResizeHandle className="w-0.5 bg-stone-700" />
         <Panel defaultSize={30}>
           <WebPreview webContainer={webContainer as WebContainer} />
         </Panel>

@@ -16,11 +16,7 @@ export function WebPreview({ webContainer }: Props) {
 
   return (
     <div className="w-full h-full bg-white">
-      <iframe
-        ref={iframeRef}
-        className="h-full w-full border-2"
-        src="loading.html"
-      />
+      <iframe ref={iframeRef} className="h-full w-full " src="loading.html" />
     </div>
   );
 }

@@ -102,7 +102,7 @@ export function MEditor({ webContainer }: Props) {
               </Sidebar>
             </div>
           </Panel>
-          <PanelResizeHandle className="w-2 bg-blue-300" />
+          <PanelResizeHandle className="w-0.5 bg-stone-600" />
           <Panel>
             <div className="flex flex-col w-full h-full">
               <OpenedFilesTab />

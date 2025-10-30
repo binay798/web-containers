@@ -116,7 +116,7 @@ export function CustomTerminal({ webContainer }: Props) {
   }, [webContainer, terminal]);
 
   return (
-    <div className="h-full border">
+    <div className="h-full border border-t-0 border-stone-700">
       <div className="w-full h-full" ref={terminalRef}></div>
     </div>
   );
